@@ -35,5 +35,5 @@ Coffee shop web application
 JSP, Bootstrap, Hibernate JPA,
 Spring Boot, Spring MVC, Spring Security, 
 Apache, Tomcat, Maven, 
-JUnit, Resttemplate
+JUnit, Resttemplate,
 Github
