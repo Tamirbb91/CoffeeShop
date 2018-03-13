@@ -19,12 +19,29 @@ import java.util.List;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ProductRestfulTest {
 
-    public final String SERVER_URI = "http://localhost:8080/rest/product";
+    private final String SERVER_URI = "http://localhost:8080/rest/product";
+    private long productId = 1;
+
 
     @Test
-    public void a_updateProduct(){
+    public void a_saveProduct(){
         RestTemplate restTemplate = new RestTemplate();
-        long productId = 121;
+
+        Product product = new Product();
+        product.setProductName("Americano");
+        product.setDescription("This is americano.");
+        product.setPrice(6);
+        product.setProductType(ProductType.DINNER);
+
+        product = restTemplate.postForObject(SERVER_URI + "/saveProduct", product, Product.class);
+
+        PrintProduct(product);
+        productId = product.getId();
+    }
+
+    @Test
+    public void b_updateProduct(){
+        RestTemplate restTemplate = new RestTemplate();
         Product product = restTemplate.getForObject(SERVER_URI + "/findById/" + productId, Product.class);
 
         System.out.println("Before update");
@@ -43,22 +60,6 @@ public class ProductRestfulTest {
     }
 
     @Test
-    public void b_saveProduct(){
-        RestTemplate restTemplate = new RestTemplate();
-
-        Product product = new Product();
-        product.setProductName("Americano");
-        product.setDescription("This is americano.");
-        product.setPrice(6);
-        product.setProductType(ProductType.DINNER);
-
-        product = restTemplate.postForObject(SERVER_URI + "/saveProduct", product, Product.class);
-
-        PrintProduct(product);
-    }
-
-
-    @Test
     public void c_allProducts(){
         RestTemplate restTemplate = new RestTemplate();
         List<LinkedHashMap> productsMap = restTemplate.getForObject(SERVER_URI + "/allProducts", List.class);
@@ -74,7 +75,6 @@ public class ProductRestfulTest {
     @Test
     public void d_findById(){
         RestTemplate restTemplate = new RestTemplate();
-        long productId = 121;
         Product product = restTemplate.getForObject(SERVER_URI + "/findById/" + productId, Product.class);
 
         if(product == null){
@@ -89,7 +89,7 @@ public class ProductRestfulTest {
     public void e_findByTextSearch(){
         RestTemplate restTemplate = new RestTemplate();
 
-        String criteria = "this";
+        String criteria = "american";
 
         List<LinkedHashMap> productsMap = restTemplate.getForObject(SERVER_URI + "/findByTextSearch/" + criteria, List.class);
 
@@ -105,8 +105,8 @@ public class ProductRestfulTest {
     public void f_findByPrice(){
         RestTemplate restTemplate = new RestTemplate();
 
-        double minPrice = 4;
-        double maxPrice = 6;
+        double minPrice = 6;
+        double maxPrice = 10;
         List<LinkedHashMap> productsMap = restTemplate.getForObject(SERVER_URI + "/findByPrice/" + minPrice + "/" + maxPrice, List.class);
 
         System.out.println("Total " + productsMap.size() + " products found");
@@ -121,7 +121,7 @@ public class ProductRestfulTest {
     public void g_findByProductType(){
         RestTemplate restTemplate = new RestTemplate();
 
-        ProductType productType = ProductType.BREAKFAST;
+        ProductType productType = ProductType.DINNER;
 
         List<LinkedHashMap> productsMap = restTemplate.getForObject(SERVER_URI + "/findByProductType/" + productType, List.class);
 
@@ -136,7 +136,6 @@ public class ProductRestfulTest {
     @Test
     public void h_removeProduct(){
         RestTemplate restTemplate = new RestTemplate();
-        long productId = 123;
         Product product = restTemplate.getForObject(SERVER_URI + "/findById/" + productId, Product.class);
 
         System.out.println("Before remove");
